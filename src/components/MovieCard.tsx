@@ -29,29 +29,32 @@ const MovieCard = ({ item, layout = "row", onSelect }: MovieCardProps) => {
       style={[styles.card, isTile && styles.cardTile]}
       onPress={() => onSelect(item.id)}
     >
-      <Image
-        source={{ uri: item.poster }}
-        style={[styles.img, isTile && styles.imgTile]}
-      />
+      <View style={isTile ? styles.posterWrapper : undefined}>
+        <Image
+          source={{ uri: item.poster }}
+          style={[styles.img, isTile && styles.imgTile]}
+        />
+        {isTile && (
+          <View style={styles.badge}>
+            <Text style={{ color: "#fff" }}>
+              ⭐{normalizeRating(item.rating).toFixed(1)}
+            </Text>
+          </View>
+        )}
+      </View>
+
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{item.title}</Text>
         {!isTile && (
           <Text style={styles.genre}>
-            {item.genre} - {item.year}
+            {item.genre} - {item.year + 1900}
           </Text>
         )}
         <View style={styles.statusContainer}>
           {!isTile && <Text>⭐{normalizeRating(item.rating).toFixed(1)}</Text>}
-          {item.isWatched ? <Text>✅</Text> : <Text>⏳</Text>}
+          <Text>{item.isWatched ? "✅" : "⏳"}</Text>
         </View>
       </View>
-      {isTile && (
-        <View style={styles.badge}>
-          <Text style={{ color: "#fff" }}>
-            ⭐{normalizeRating(item.rating).toFixed(1)}
-          </Text>
-        </View>
-      )}
     </TouchableOpacity>
   );
 };
@@ -62,10 +65,9 @@ const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 10,
-    marginBottom: 12,
-    marginHorizontal: 6,
-    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+    padding: 8,
     backgroundColor: "#fff",
     flexDirection: "row",
     gap: 10,
@@ -74,14 +76,17 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "48%",
   },
+  posterWrapper: {
+    position: "relative",
+  },
   img: {
     width: 70,
     height: 100,
+    borderRadius: 4,
     resizeMode: "cover",
   },
   imgTile: {
     width: "100%",
-    height: undefined,
     aspectRatio: 2 / 3,
   },
   infoContainer: {
@@ -93,8 +98,9 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   genre: {
-    fontSize: 16,
+    fontSize: 14,
     fontStyle: "italic",
+    color: "#666",
   },
   statusContainer: {
     flexDirection: "row",
@@ -103,10 +109,11 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: "absolute",
-    top: 8,
-    right: 8,
-    backgroundColor: "#1a1a1a",
+    top: 6,
+    right: 6,
+    backgroundColor: "rgba(0,0,0,0.7)",
     borderRadius: 4,
-    paddingHorizontal: 3,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
   },
 });
